@@ -32,17 +32,10 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		20B171982D629988001E7E6C /* ToDoList */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+				Resources/en.lproj/Localizable.strings = text.plist.strings;
+			};
 			path = ToDoList;
-			sourceTree = "<group>";
-		};
-		20B171A92D629989001E7E6C /* ToDoListTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ToDoListTests;
-			sourceTree = "<group>";
-		};
-		20B171B32D629989001E7E6C /* ToDoListUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ToDoListUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -76,8 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				20B171982D629988001E7E6C /* ToDoList */,
-				20B171A92D629989001E7E6C /* ToDoListTests */,
-				20B171B32D629989001E7E6C /* ToDoListUITests */,
 				20B171972D629988001E7E6C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +121,6 @@
 			dependencies = (
 				20B171A82D629989001E7E6C /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				20B171A92D629989001E7E6C /* ToDoListTests */,
-			);
 			name = ToDoListTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +140,6 @@
 			);
 			dependencies = (
 				20B171B22D629989001E7E6C /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				20B171B32D629989001E7E6C /* ToDoListUITests */,
 			);
 			name = ToDoListUITests;
 			packageProductDependencies = (
@@ -192,6 +177,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 20B1718D2D629988001E7E6C;
 			minimizedProjectReferenceProxies = 1;
@@ -274,6 +260,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -337,6 +324,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

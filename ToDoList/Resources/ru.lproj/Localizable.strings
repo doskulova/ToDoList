@@ -5,14 +5,6 @@
 //  Created by Alina Doskulova on 17/2/25.
 //
 
-/* English */
-"settings.title" = "Settings";
-"theme.title" = "Appearance";
-"language.title" = "Language";
-"light.theme" = "Light";
-"dark.theme" = "Dark";
-"system.theme" = "System";
-"done.button" = "Done";
 
 /* Russian */
 "settings.title" = "Настройки";
@@ -22,3 +14,4 @@
 "dark.theme" = "Темная";
 "system.theme" = "Системная";
 "done.button" = "Готово";
+"Tasks" = "Заметки";

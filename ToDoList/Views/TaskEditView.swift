@@ -7,78 +7,96 @@
 
 import SwiftUI
 
-struct AddTaskView: View {
+struct TaskEditView: View {
     @EnvironmentObject var taskManager: TaskManager
     @Environment(\.dismiss) var dismiss
     @State private var newTask: Task
-    private var isEditing: Bool
     
-    // Инициализатор для создания новой задачи
-    init() {
-        self._newTask = State(initialValue: Task(title: ""))
-        self.isEditing = false
-    }
-    
-    // Инициализатор для редактирования существующей задачи
-    init(task: Task) {
-        self._newTask = State(initialValue: task)
-        self.isEditing = true
+    init(task: Task? = nil) {
+        _newTask = State(initialValue: task ?? Task(title: ""))
     }
     
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Основное") {
-                    TextField("Название задачи", text: $newTask.title)
-                    TextField("Описание", text: $newTask.description)
-                }
+            ZStack {
+                // Фон с градиентом
+                LinearGradient(
+                    gradient: Gradient(colors: [Color(.systemTeal).opacity(0.1), Color(.systemIndigo).opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
-                Section("Детали") {
-                    DatePicker(
-                        "Дата выполнения",
-                        selection: $newTask.dueDate,
-                        displayedComponents: .date
-                    )
-                    
-                    Picker("Категория", selection: $newTask.category) {
-                        ForEach(Category.allCases) { category in
-                            Text(category.rawValue).tag(category)
-                        }
+                // Основной контент
+                Form {
+                    Section(header: Text("Основное")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    ) {
+                        TextField("Название задачи", text: $newTask.title)
+                            .font(.system(.body, design: .rounded))
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                        
+                        DatePicker("Дата выполнения", selection: $newTask.dueDate, displayedComponents: .date)
+                            .font(.system(.body, design: .rounded))
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
                     }
                     
-                    Picker("Приоритет", selection: $newTask.priority) {
-                        ForEach(Priority.allCases) { priority in
-                            Text(priority.rawValue).tag(priority)
+                    Section(header: Text("Детали")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    ) {
+                        Picker("Категория", selection: $newTask.category) {
+                            ForEach(Category.allCases, id: \.self) { category in
+                                Text(category.rawValue).tag(category)
+                            }
                         }
+                        .pickerStyle(SegmentedPickerStyle()) // More visually engaging
+                        .padding(.vertical)
                     }
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.systemBackground))
+                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 3)
+                )
+                .scrollContentBackground(.hidden)
             }
-            .navigationTitle(isEditing ? "Редактировать" : "Новая задача")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(newTask.title.isEmpty ? "Новая задача" : "Редактирование")
             .toolbar {
+                // Кнопка отмены
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") {
                         dismiss()
                     }
+                    .foregroundColor(.red)
                 }
                 
+                // Кнопка сохранения
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isEditing ? "Готово" : "Сохранить") {
-                        saveTask()
+                    Button("Сохранить") {
+                        if taskManager.tasks.contains(where: { $0.id == newTask.id }) {
+                            taskManager.updateTask(newTask) //
+                        } else {
+                            taskManager.addTask(newTask)
+                        }
+                        dismiss()
                     }
-                    .disabled(newTask.title.isEmpty)
+                    .disabled(newTask.title.isEmpty) //
+                    .foregroundColor(.blue)
                 }
             }
         }
     }
-    
-    private func saveTask() {
-        if isEditing {
-            taskManager.updateTask(newTask)
-        } else {
-            taskManager.addTask(newTask)
-        }
-        dismiss()
-    }
 }
 
+#Preview {
+    TaskEditView()
+        .environmentObject(TaskManager())
+}

@@ -13,12 +13,4 @@
 "dark.theme" = "Dark";
 "system.theme" = "System";
 "done.button" = "Done";
-
-/* Russian */
-"settings.title" = "Настройки";
-"theme.title" = "Внешний вид";
-"language.title" = "Язык";
-"light.theme" = "Светлая";
-"dark.theme" = "Темная";
-"system.theme" = "Системная";
-"done.button" = "Готово";
+"Tasks" = "Tasks";
