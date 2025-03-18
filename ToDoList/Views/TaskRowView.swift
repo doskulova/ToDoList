@@ -7,12 +7,11 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct TaskRowView: View {
     let task: Task
     @EnvironmentObject var taskManager: TaskManager
     @State private var isTapped = false
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
@@ -40,7 +39,7 @@ struct TaskRowView: View {
     private var completionIndicator: some View {
         ZStack {
             Circle()
-                .stroke(task.isCompleted ? Color.mint : Color.gray.opacity(0.3), lineWidth: 2)
+                .stroke(task.isCompleted ? Color.pink : Color.gray.opacity(0.3), lineWidth: 2)
                 .frame(width: 32, height: 32)
             
             if task.isCompleted {
@@ -77,11 +76,21 @@ struct TaskRowView: View {
     }
     
     private var background: some View {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color.white.opacity(0.95),
-                task.isCompleted ? Color.mint.opacity(0.1) : Color.blue.opacity(0.1)
-            ]),
+
+        let lightGradient = Gradient(colors: [
+            Color.white.opacity(0.95),
+            task.isCompleted ? Color.pink.opacity(0.1) : Color.blue.opacity(0.1)
+        ])
+        
+        let darkGradient = Gradient(colors: [
+            Color.black.opacity(0.95),
+            task.isCompleted ? Color.green.opacity(0.1) : Color.blue.opacity(0.1)
+        ])
+        
+        let gradient = colorScheme == .dark ? darkGradient : lightGradient
+        
+        return LinearGradient(
+            gradient: gradient,
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
@@ -106,7 +115,7 @@ struct TaskRowView: View {
                     .font(.caption2)
                     .fontWeight(.bold)
                     .padding(6)
-                    .background(Color.red.opacity(0.8))
+                    .background(Color.pink.opacity(0.8))
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     .padding([.top, .trailing], 8)

@@ -13,5 +13,6 @@ enum Category: String, CaseIterable, Identifiable, Codable {
     case shopping = "Покупки"
     
     var id: String { self.rawValue }
+    
+    
 }
-

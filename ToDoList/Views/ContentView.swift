@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var searchQuery = ""
     @State private var showCompleted = true
     
-    // Определите основной цвет
+   
     private let primaryColor = Color.pink
     
     var filteredTasks: [Task] {
@@ -81,7 +81,11 @@ struct ContentView: View {
                         .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white.opacity(0.8))
+                                .fill(
+                                    Color(uiColor: settings.selectedTheme.colorScheme == .dark
+                                          ? UIColor.secondarySystemBackground
+                                          : UIColor.systemBackground) // Адаптивный цвет
+                                )
                                 .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
                         )
                         .padding(.horizontal)
@@ -105,6 +109,7 @@ struct ContentView: View {
         }
         .listStyle(InsetGroupedListStyle())
     }
+
     
     private var emptyStateView: some View {
         VStack(spacing: 20) {
@@ -139,24 +144,36 @@ struct ContentView: View {
     }
     
     private var searchAndFilterView: some View {
-        VStack {
+        VStack(spacing: 10) {
             // Поиск
-            TextField("Search tasks...", text: $searchQuery)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding([.horizontal, .top])
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(10)
-                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                
+                TextField("Search tasks...", text: $searchQuery)
+                    .foregroundColor(.primary)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(uiColor: settings.selectedTheme.colorScheme == .dark
+                                ? UIColor.secondarySystemBackground
+                                : UIColor.systemBackground)) // Адаптивный цвет
+                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+            )
+            .padding(.horizontal)
             
             // Фильтрация
             Toggle(isOn: $showCompleted) {
                 Text("Show Completed Tasks")
                     .font(.subheadline)
             }
-            .padding([.horizontal])
+            .padding(.horizontal)
             .tint(primaryColor)
         }
+        .padding(.top)
     }
+
     
     private func deleteTask(at offsets: IndexSet) {
         withAnimation {

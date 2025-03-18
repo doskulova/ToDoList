@@ -20,9 +20,8 @@ extension TasksEntity {
     @NSManaged public var time: Date
     @NSManaged public var id: UUID
     @NSManaged public var category: String
-
+    @NSManaged public var priority: String
+    @NSManaged public var isCompleted: Bool
 }
 
-extension TasksEntity : Identifiable {
-
-}
+extension TasksEntity: Identifiable {}

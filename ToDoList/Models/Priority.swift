@@ -13,4 +13,6 @@ enum Priority: String, CaseIterable, Identifiable, Codable {
     
     
     var id: String { self.rawValue }
+    
+    static let defaultValue: Priority = .low
 }

@@ -14,7 +14,13 @@ class TaskManager: ObservableObject {
     func addTask(_ task: Task) {
         tasks.append(task)
         tasks.sort { $0.dueDate < $1.dueDate }
-        DataManager.shared.saveTask(name: task.title, date: task.dueDate, category: task.category.id)
+        DataManager.shared.saveTask(
+            name: task.title,
+            date: task.dueDate,
+            category: task.category.id,
+            priority: task.priority.rawValue,
+            isCompleted: task.isCompleted
+        )
     }
     
     func toggleTaskCompletion(_ task: Task) {
@@ -25,13 +31,14 @@ class TaskManager: ObservableObject {
     
     func deleteTask(_ task: Task) {
         tasks.removeAll { $0.id == task.id }
+        DataManager.shared.deleteTask(id: task.id)
     }
     
     func updateTask(_ task: Task) {
-            if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                tasks[index] = task
-            }
+        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+            tasks[index] = task
         }
+    }
     
     func fetchTasks() {
         tasks = DataManager.shared.fetchTask()

@@ -11,7 +11,6 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     let languages = ["en": "English", "ru": "Русский"]
     
-    // Основной цвет
     private let primaryColor = Color.pink
     
     var body: some View {
@@ -80,6 +79,11 @@ struct SettingsView: View {
                 .onTapGesture {
                     withAnimation {
                         settings.selectedLanguage = code
+            
+                        UserDefaults.standard.set(code, forKey: "selectedLanguage")
+                        
+        
+                        changeLanguage(to: code)
                     }
                 }
             }
@@ -109,6 +113,15 @@ struct SettingsView: View {
                     )
             }
             .buttonStyle(ScaleButtonStyle())
+        }
+    }
+    
+    
+    private func changeLanguage(to languageCode: String) {
+        _ = Locale(identifier: languageCode)
+        
+        if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
+           let _ = Bundle(path: path) {
         }
     }
     

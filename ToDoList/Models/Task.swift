@@ -14,20 +14,26 @@ struct Task: Identifiable, Equatable, Codable {
     var category: Category
     var isCompleted: Bool
     var priority: Priority
+    var description: String?
+    
     init(
         id: UUID = UUID(),
         title: String,
         dueDate: Date = Date(),
         category: Category = .personal,
         isCompleted: Bool = false,
-        priority: Priority = .low
-    ) {
+        priority: Priority = .low,
+        description: String? = nil
+    )
+    {
         self.id = id
         self.title = title
         self.dueDate = dueDate
         self.category = category
         self.isCompleted = isCompleted
         self.priority = priority
+        self.description = description
+        
     }
     
 }

@@ -13,37 +13,51 @@ struct TaskEditView: View {
     @State private var newTask: Task
     
     init(task: Task? = nil) {
-        _newTask = State(initialValue: task ?? Task(title: ""))
-    }
+            _newTask = State(initialValue: task ?? Task(
+                title: "",
+                dueDate: Date(),
+                category: .work,
+                isCompleted: false,
+                priority: .medium,
+                description: ""
+            ))
+        }
+
+
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Фон с градиентом
                 LinearGradient(
                     gradient: Gradient(colors: [Color(.systemTeal).opacity(0.1), Color(.systemIndigo).opacity(0.1)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
-                
-                // Основной контент
                 Form {
                     Section(header: Text("Основное")
                         .font(.headline)
                         .foregroundColor(.primary)
                     ) {
                         TextField("Название задачи", text: $newTask.title)
-                            .font(.system(.body, design: .rounded))
                             .padding()
-                            .background(Color.white)
+                            .background(adaptiveBackground)
                             .cornerRadius(8)
                             .shadow(radius: 4)
                         
+                        TextField("Описание", text: Binding(
+                            get: { newTask.description ?? "" },
+                            set: { newTask.description = $0 }
+                        ))
+                        .padding()
+                        .background(adaptiveBackground)
+                        .cornerRadius(8)
+                        .shadow(radius: 4)
+
+                        
                         DatePicker("Дата выполнения", selection: $newTask.dueDate, displayedComponents: .date)
-                            .font(.system(.body, design: .rounded))
                             .padding()
-                            .background(Color.white)
+                            .background(adaptiveBackground)
                             .cornerRadius(8)
                             .shadow(radius: 4)
                     }
@@ -57,20 +71,14 @@ struct TaskEditView: View {
                                 Text(category.rawValue).tag(category)
                             }
                         }
-                        .pickerStyle(SegmentedPickerStyle()) // More visually engaging
+                        .pickerStyle(SegmentedPickerStyle())
                         .padding(.vertical)
                     }
                 }
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.systemBackground))
-                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 3)
-                )
                 .scrollContentBackground(.hidden)
             }
             .navigationTitle(newTask.title.isEmpty ? "Новая задача" : "Редактирование")
             .toolbar {
-                // Кнопка отмены
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") {
                         dismiss()
@@ -78,21 +86,29 @@ struct TaskEditView: View {
                     .foregroundColor(.red)
                 }
                 
-                // Кнопка сохранения
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
                         if taskManager.tasks.contains(where: { $0.id == newTask.id }) {
-                            taskManager.updateTask(newTask) //
+                            taskManager.updateTask(newTask)
                         } else {
                             taskManager.addTask(newTask)
                         }
                         dismiss()
                     }
-                    .disabled(newTask.title.isEmpty) //
+                    .disabled(newTask.title.isEmpty)
                     .foregroundColor(.blue)
                 }
             }
         }
+    }
+    
+
+    private var adaptiveBackground: Color {
+        Color(uiColor: UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor.secondarySystemBackground
+                : UIColor.systemBackground
+        })
     }
 }
 
