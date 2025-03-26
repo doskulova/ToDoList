@@ -10,109 +10,94 @@ import SwiftUI
 struct TaskEditView: View {
     @EnvironmentObject var taskManager: TaskManager
     @Environment(\.dismiss) var dismiss
-    @State private var newTask: Task
+    @State private var title: String
+    @State private var taskDescription: String
+    @State private var dueDate: Date
+    @State private var category: Category
+    @State private var priority: Priority
+    private var task: Task?
     
     init(task: Task? = nil) {
-            _newTask = State(initialValue: task ?? Task(
-                title: "",
-                dueDate: Date(),
-                category: .work,
-                isCompleted: false,
-                priority: .medium,
-                description: ""
-            ))
-        }
-
-
+        self.task = task
+        _title = State(initialValue: task?.title ?? "")
+        _taskDescription = State(initialValue: task?.description ?? "")
+        _dueDate = State(initialValue: task?.dueDate ?? Date())
+        _category = State(initialValue: task?.category ?? .work)
+        _priority = State(initialValue: task?.priority ?? .medium)
+    }
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [Color(.systemTeal).opacity(0.1), Color(.systemIndigo).opacity(0.1)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-                Form {
-                    Section(header: Text("Основное")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    ) {
-                        TextField("Название задачи", text: $newTask.title)
-                            .padding()
-                            .background(adaptiveBackground)
-                            .cornerRadius(8)
-                            .shadow(radius: 4)
-                        
-                        TextField("Описание", text: Binding(
-                            get: { newTask.description ?? "" },
-                            set: { newTask.description = $0 }
-                        ))
-                        .padding()
-                        .background(adaptiveBackground)
-                        .cornerRadius(8)
-                        .shadow(radius: 4)
-
-                        
-                        DatePicker("Дата выполнения", selection: $newTask.dueDate, displayedComponents: .date)
-                            .padding()
-                            .background(adaptiveBackground)
-                            .cornerRadius(8)
-                            .shadow(radius: 4)
-                    }
+            Form {
+                Section(header: Text("Основное").font(.headline).foregroundColor(.primary)) {
+                    TextField("Название задачи", text: $title)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.vertical, 8)
                     
-                    Section(header: Text("Детали")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    ) {
-                        Picker("Категория", selection: $newTask.category) {
-                            ForEach(Category.allCases, id: \.self) { category in
-                                Text(category.rawValue).tag(category)
-                            }
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding(.vertical)
-                    }
+                    TextField("Описание", text: $taskDescription)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.vertical, 8)
+                    
+                    DatePicker("Дата выполнения", selection: $dueDate, displayedComponents: .date)
+                        .padding(.vertical, 8)
                 }
-                .scrollContentBackground(.hidden)
+                
+                Section(header: Text("Детали").font(.headline).foregroundColor(.primary)) {
+                    Picker("Категория", selection: $category) {
+                        ForEach(Category.allCases, id: \.self) { category in
+                            Text(category.rawValue).tag(category)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.vertical, 8)
+                    
+                    Picker("Приоритет", selection: $priority) {
+                        ForEach(Priority.allCases, id: \.self) { priority in
+                            Text(priority.rawValue).tag(priority)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.vertical, 8)
+                }
             }
-            .navigationTitle(newTask.title.isEmpty ? "Новая задача" : "Редактирование")
+            .navigationTitle(title.isEmpty ? "Новая задача" : "Редактирование")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") {
                         dismiss()
                     }
-                    .foregroundColor(.red)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
-                        if taskManager.tasks.contains(where: { $0.id == newTask.id }) {
-                            taskManager.updateTask(newTask)
-                        } else {
-                            taskManager.addTask(newTask)
-                        }
+                        saveTask()
                         dismiss()
                     }
-                    .disabled(newTask.title.isEmpty)
-                    .foregroundColor(.blue)
+                    .disabled(title.isEmpty)
                 }
             }
         }
+        .background(Color(UIColor.systemGroupedBackground))
     }
     
-
-    private var adaptiveBackground: Color {
-        Color(uiColor: UIColor { traitCollection in
-            traitCollection.userInterfaceStyle == .dark
-                ? UIColor.secondarySystemBackground
-                : UIColor.systemBackground
-        })
+    private func saveTask() {
+        if let task = task {
+            taskManager.updateTask(
+                task,
+                title: title,
+                description: taskDescription,
+                dueDate: dueDate,
+                category: category,
+                priority: priority
+            )
+        } else {
+            let newTask = Task(
+                title: title,
+                dueDate: dueDate,
+                category: category,
+                priority: priority
+            )
+            taskManager.addTask(newTask)
+        }
     }
-}
-
-#Preview {
-    TaskEditView()
-        .environmentObject(TaskManager())
 }

@@ -9,6 +9,7 @@ import CoreData
 class DataManager {
     static let shared = DataManager()
     private init() {}
+    
     var controller : NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ToDoListDB")
         container.loadPersistentStores { _, error in
@@ -65,6 +66,7 @@ class DataManager {
     }
     
     
+    
     func fetchTask() -> [Task] {
         let request: NSFetchRequest<TasksEntity> = TasksEntity.fetchRequest()
         do {
@@ -90,5 +92,37 @@ class DataManager {
             return []
         }
     }
+    
+    func updateTaskCompletion(id: UUID, isCompleted: Bool) {
+            let request: NSFetchRequest<TasksEntity> = TasksEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            
+            do {
+                if let task = try context.fetch(request).first {
+                    task.isCompleted = isCompleted
+                    save()
+                }
+            } catch {
+                print("Failed to update task completion: \(error.localizedDescription)")
+            }
+        }
+    
+    func updateTask (id: UUID, name: String, date: Date, category: String, priority: String, isCompleted: Bool) {
+            let request: NSFetchRequest<TasksEntity> = TasksEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            
+            do {
+                if let task = try context.fetch(request).first {
+                    task.text = name
+                    task.time = date
+                    task.category = category
+                    task.priority = priority
+                    task.isCompleted = isCompleted
+                    save()
+                }
+            } catch {
+                print("Failed to update task: \(error.localizedDescription)")
+            }
+        }
 }
 

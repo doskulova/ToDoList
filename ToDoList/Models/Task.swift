@@ -35,5 +35,13 @@ struct Task: Identifiable, Equatable, Codable {
         self.description = description
         
     }
+    mutating func update(title: String, description: String, dueDate: Date, category: Category, priority: Priority) {
+           self.title = title
+           self.description = description
+           self.dueDate = dueDate
+           self.category = category
+           self.priority = priority
+        
+       }
     
 }

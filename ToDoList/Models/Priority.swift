@@ -7,6 +7,7 @@
 
 
 enum Priority: String, CaseIterable, Identifiable, Codable {
+    case none = "None"
     case low = "Низкий"
     case medium = "Средний"
     case high = "Высокий"

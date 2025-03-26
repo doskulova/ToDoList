@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 @MainActor
 class TaskManager: ObservableObject {
     @Published var tasks: [Task] = []
@@ -26,6 +27,7 @@ class TaskManager: ObservableObject {
     func toggleTaskCompletion(_ task: Task) {
         if let index = tasks.firstIndex(where: { $0.id == task.id }) {
             tasks[index].isCompleted.toggle()
+            DataManager.shared.updateTaskCompletion(id: task.id, isCompleted: tasks[index].isCompleted)
         }
     }
     
@@ -34,9 +36,31 @@ class TaskManager: ObservableObject {
         DataManager.shared.deleteTask(id: task.id)
     }
     
-    func updateTask(_ task: Task) {
+    func deleteTask(at indices: IndexSet) {
+            indices.forEach { index in
+                let task = tasks[index]
+                DataManager.shared.deleteTask(id: task.id)
+            }
+            tasks.remove(atOffsets: indices)
+        }
+    
+    func moveTasks(from source: IndexSet, to destination: Int) {
+            tasks.move(fromOffsets: source, toOffset: destination)
+            
+        }
+    
+    func updateTask(_ task: Task, title: String, description: String, dueDate: Date, category: Category, priority: Priority) {
         if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index] = task
+            tasks[index].update(title: title, description: description, dueDate: dueDate, category: category, priority: priority)
+            
+            DataManager.shared.updateTask(
+                            id: task.id,
+                            name: title,
+                            date: dueDate,
+                            category: category.id,
+                            priority: priority.rawValue,
+                            isCompleted: tasks[index].isCompleted
+                        )
         }
     }
     
