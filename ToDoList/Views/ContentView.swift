@@ -1,4 +1,3 @@
-//
 //  ContentView.swift
 //  ToDoList
 //
@@ -15,28 +14,27 @@ struct ContentView: View {
     @State private var showCompleted = true
     @State private var selectedDate: Date?
     @State private var showDatePicker = false
-    
+
     private var primaryColor: Color {
         settings.selectedTheme == .dark ? Color(red: 0.04, green: 0.26, blue: 0.11) : .green
     }
-    
+
     private var secondaryColor: Color {
         settings.selectedTheme == .dark ? Color(red: 0.07, green: 0.15, blue: 0.13) : .yellow.opacity(0.7)
     }
-    
-    // Цвета для кнопок в темной теме
+
     private var darkButtonText: Color {
         Color(red: 0.6, green: 0.8, blue: 0.6)
     }
-    
+
     private var darkButtonBackground: Color {
         Color(red: 0.1, green: 0.2, blue: 0.1)
     }
-    
+
     private var darkButtonBorder: Color {
         Color(red: 0.3, green: 0.5, blue: 0.3)
     }
-    
+
     var filteredTasks: [Task] {
         taskManager.tasks.filter { task in
             (searchQuery.isEmpty || task.title.localizedCaseInsensitiveContains(searchQuery)) &&
@@ -44,7 +42,7 @@ struct ContentView: View {
             (selectedDate == nil || Calendar.current.isDate(task.dueDate, inSameDayAs: selectedDate!))
         }
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -57,10 +55,8 @@ struct ContentView: View {
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                
-                
+
                 VStack(spacing: 0) {
-                    
                     searchAndFilterView
                         .padding(.horizontal)
                         .padding(.top, 8)
@@ -68,8 +64,7 @@ struct ContentView: View {
                             Color(.systemBackground)
                                 .softNeumorphism(colorScheme: settings.selectedTheme.colorScheme ?? .light)
                         )
-                    
-                    
+
                     if filteredTasks.isEmpty {
                         emptyStateView
                     } else {
@@ -77,11 +72,10 @@ struct ContentView: View {
                             .frame(maxHeight: .infinity)
                     }
                 }
-                
-                
+
                 floatingActionButton
             }
-            .navigationTitle("Tasks")
+            .navigationTitle(Text("Tasks"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     settingsButton
@@ -96,9 +90,7 @@ struct ContentView: View {
             .preferredColorScheme(settings.selectedTheme.colorScheme)
         }
     }
-    
-    
-    
+
     private var settingsButton: some View {
         NavigationLink(destination: SettingsView()) {
             Image(systemName: "gearshape.fill")
@@ -112,20 +104,20 @@ struct ContentView: View {
                 )
         }
     }
-    
+
     private var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "checklist.unchecked")
                 .font(.system(size: 60))
                 .foregroundColor(primaryColor.opacity(0.5))
-            
+
             VStack(spacing: 8) {
-                Text("No tasks found")
+                Text("no_tasks_message")
                     .font(.title3)
                     .fontWeight(.medium)
                     .foregroundColor(settings.selectedTheme == .dark ? .white : .primary)
-                
-                Text("Try adjusting your filters or add a new task")
+
+                Text("adjust_filters_hint")
                     .font(.subheadline)
                     .foregroundColor(settings.selectedTheme == .dark ? .white.opacity(0.7) : .secondary)
                     .multilineTextAlignment(.center)
@@ -135,7 +127,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .transition(.opacity)
     }
-    
+
     private var floatingActionButton: some View {
         VStack {
             Spacer()
@@ -159,17 +151,16 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var searchAndFilterView: some View {
         VStack(spacing: 12) {
-            
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(settings.selectedTheme == .dark ? .white : .secondary)
-                
-                TextField("Search tasks...", text: $searchQuery)
+
+                TextField(LocalizedStringKey("search_placeholder"), text: $searchQuery)
                     .foregroundColor(settings.selectedTheme == .dark ? .white : .primary)
-                
+
                 if !searchQuery.isEmpty {
                     Button(action: {
                         searchQuery = ""
@@ -182,10 +173,8 @@ struct ContentView: View {
             .padding(10)
             .background(settings.selectedTheme == .dark ? Color(.systemGray5) : Color(.secondarySystemBackground))
             .cornerRadius(10)
-            
-            
+
             HStack {
-                
                 Button(action: {
                     withAnimation {
                         showDatePicker.toggle()
@@ -196,7 +185,8 @@ struct ContentView: View {
                 }) {
                     HStack(spacing: 6) {
                         Image(systemName: "calendar")
-                        Text(selectedDate != nil ? selectedDate!.formatted(.dateTime.day().month()) : "Any date")
+                        Text(selectedDate != nil ? selectedDate!.formatted(.dateTime.day().month()) : String(localized: "any_date_button"))
+
                             .font(.subheadline)
                     }
                     .padding(10)
@@ -210,8 +200,7 @@ struct ContentView: View {
                             .stroke(settings.selectedTheme == .dark ? darkButtonBorder : primaryColor.opacity(0.3), lineWidth: 1)
                     )
                 }
-                
-                
+
                 Button(action: {
                     withAnimation {
                         showCompleted.toggle()
@@ -219,7 +208,7 @@ struct ContentView: View {
                 }) {
                     HStack(spacing: 6) {
                         Image(systemName: showCompleted ? "checkmark.circle.fill" : "circle")
-                        Text("Completed")
+                        Text("completed_button")
                             .font(.subheadline)
                     }
                     .padding(10)
@@ -234,11 +223,10 @@ struct ContentView: View {
                     )
                 }
             }
-            
-            
+
             if showDatePicker {
                 DatePicker(
-                    "Filter by date",
+                    LocalizedStringKey("filter_by_date"),
                     selection: Binding(get: { selectedDate ?? Date() }, set: { selectedDate = $0 }),
                     displayedComponents: .date
                 )

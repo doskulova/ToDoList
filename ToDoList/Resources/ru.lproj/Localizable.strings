@@ -14,4 +14,10 @@
 "dark.theme" = "Темная";
 "system.theme" = "Системная";
 "done.button" = "Готово";
-"Tasks" = "Заметки";
+"Tasks" = "Задачи";
+"no_tasks_message" = "Задачи не найдены";
+"adjust_filters_hint" = "Попробуйте изменить фильтры или добавить новую задачу";
+"search_placeholder" = "Поиск задач...";
+"completed_button" = "Завершённые";
+"any_date_button" = "Любая дата";
+"filter_by_date" = "Фильтр по дате";

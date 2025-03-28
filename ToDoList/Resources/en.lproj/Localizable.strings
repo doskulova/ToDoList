@@ -14,3 +14,9 @@
 "system.theme" = "System";
 "done.button" = "Done";
 "Tasks" = "Tasks";
+"no_tasks_message" = "No tasks found";
+"adjust_filters_hint" = "Try adjusting your filters or add a new task";
+"search_placeholder" = "Search tasks...";
+"completed_button" = "Completed";
+"any_date_button" = "Any date";
+"filter_by_date" = "Filter by date";

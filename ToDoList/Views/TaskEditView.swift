@@ -53,7 +53,9 @@ struct TaskEditView: View {
                     
                     Picker("Приоритет", selection: $priority) {
                         ForEach(Priority.allCases, id: \.self) { priority in
-                            Text(priority.rawValue).tag(priority)
+                            Text(priority.rawValue)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .tag(priority)
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
@@ -85,7 +87,7 @@ struct TaskEditView: View {
             taskManager.updateTask(
                 task,
                 title: title,
-                description: taskDescription,
+                description: taskDescription, // Передаем описание
                 dueDate: dueDate,
                 category: category,
                 priority: priority
@@ -95,9 +97,11 @@ struct TaskEditView: View {
                 title: title,
                 dueDate: dueDate,
                 category: category,
-                priority: priority
+                priority: priority,
+                description: taskDescription
             )
             taskManager.addTask(newTask)
         }
     }
+
 }
